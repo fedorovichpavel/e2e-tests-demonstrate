@@ -4,6 +4,7 @@ import {MainLayout} from '../components/MainLayout'
 import Link from 'next/link'
 import {MyPost} from '../interfaces/post'
 import {NextPageContext} from 'next'
+import { ModalComponent } from '../components/Modal'
 
 interface PostsPageProps {
   posts: MyPost[]
@@ -11,18 +12,22 @@ interface PostsPageProps {
 
 export default function Posts({ posts: serverPosts }: PostsPageProps) {
   const [posts, setPosts] = useState(serverPosts)
+  const [modal, setModal] = useState(false)
+  const [reload, setReload] = useState(false)
 
   useEffect(() => {
-    async function load() {
-      const response = await fetch('http://localhost:4300/posts')
-      const json = await response.json()
-      setPosts(json)
+    if (!modal) {
+      const load = async () => {
+        const response = await fetch('http://localhost:4300/posts')
+        const json = await response.json()
+        setPosts(json)
+      }
+  
+      if (!serverPosts) {
+        load()
+      }
     }
-
-    if (!serverPosts) {
-      load()
-    }
-  }, [])
+  }, [reload])
 
   if (!posts) {
     return <MainLayout>
@@ -30,13 +35,30 @@ export default function Posts({ posts: serverPosts }: PostsPageProps) {
     </MainLayout>
   }
 
+  const addPost = async (data) => {
+    try {
+      await fetch(`http://localhost:4300/posts`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(data)
+      })
+      setReload(prev => !prev)
+      setModal(false)
+    } catch (e) {
+
+    }
+  }
+
   return (
     <MainLayout>
+      <ModalComponent isOpen={modal} onFinish={addPost}  closeModal={() => setModal(false)} />
       <Head>
-        <title>Posts Page | Next Course</title>
+        <title>Posts Page | e2e\nextJs</title>
       </Head>
       <h1>Posts Page</h1>
-      <ul>
+      <ul data-cy='posts-list'>
         {posts.map(post => (
           <li key={post.id}>
             <Link href={`/post/[id]`} as={`/post/${post.id}`}>
@@ -45,6 +67,23 @@ export default function Posts({ posts: serverPosts }: PostsPageProps) {
           </li>
         ))}
       </ul>
+      <button data-cy='add-new-post-button' onClick={() => setModal(true)}>
+        Add new
+      </button>
+      <style jsx>{`
+        button {
+          padding: 5px 10px;
+          background: #0000ff;
+          color: #fff;
+          font-size: 20px;
+          outline:none;
+          border: none;
+        }
+        button:hover {
+          cursor: pointer;
+          background: #5858ff;
+        }
+      `}</style>
     </MainLayout>
   )
 }

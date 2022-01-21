@@ -5,7 +5,7 @@ export function MainLayout({ children, title = 'Next App', ...rest }) {
   return (
     <>
       <Head>
-        <title>{title} | Next Course</title>
+        <title>{title} | e2e\nextJs</title>
         <meta name="keywords" content="next,javascript,nextjs,react" />
         <meta name="description" content="this is youtube tutorial for next" />
         <meta charSet="utf-8" />

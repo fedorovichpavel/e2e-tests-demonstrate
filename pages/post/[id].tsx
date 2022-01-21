@@ -33,10 +33,12 @@ export default function Post({ post: serverPost }: PostPageProps) {
 
   return(
     <MainLayout>
-      <h1>{post.title}</h1>
-      <hr />
-      <p>{post.body}</p>
-      <Link href={'/posts'}><a>Back to all posts</a></Link>
+      <div data-cy='post-body'>
+        <h1>{post.title}</h1>
+        <hr />
+        <p>{post.body}</p>
+        <Link href={'/posts'}><a>Back to all posts</a></Link>
+      </div>
     </MainLayout>
   )
 }

@@ -1,5 +1,6 @@
 import NextNprogress from 'nextjs-progressbar'
 import '../styles/main.scss'
+import "react-responsive-modal/styles.css";
 
 export default function MyApp({ Component, pageProps }) {
   return (

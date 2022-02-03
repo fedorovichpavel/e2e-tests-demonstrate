@@ -13,21 +13,20 @@ interface PostsPageProps {
 export default function Posts({ posts: serverPosts }: PostsPageProps) {
   const [posts, setPosts] = useState(serverPosts)
   const [modal, setModal] = useState(false)
-  const [reload, setReload] = useState(false)
+
+  const load = async () => {
+    const response = await fetch('http://localhost:4300/posts')
+    const json = await response.json()
+    setPosts(json)
+  }
 
   useEffect(() => {
     if (!modal) {
-      const load = async () => {
-        const response = await fetch('http://localhost:4300/posts')
-        const json = await response.json()
-        setPosts(json)
-      }
-  
       if (!serverPosts) {
         load()
       }
     }
-  }, [reload])
+  }, [])
 
   if (!posts) {
     return <MainLayout>
@@ -44,8 +43,9 @@ export default function Posts({ posts: serverPosts }: PostsPageProps) {
         },
         body: JSON.stringify(data)
       })
-      setReload(prev => !prev)
       setModal(false)
+      setPosts(null)
+      load()
     } catch (e) {
 
     }
@@ -82,6 +82,21 @@ export default function Posts({ posts: serverPosts }: PostsPageProps) {
         button:hover {
           cursor: pointer;
           background: #5858ff;
+        }
+        ul {
+          list-style: none;
+        }
+        li {
+          line-height: 50px;
+        }
+        a {
+          border: solid 1px #a6a6a6;
+          padding 5px 10px;
+          text-decoration: none;
+          transition: all 0.5s;
+        }
+        a:hover {
+          background: #a6a6a6;
         }
       `}</style>
     </MainLayout>

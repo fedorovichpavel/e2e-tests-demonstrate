@@ -38,7 +38,7 @@ export function MainLayout({ children, title = 'Next App', ...rest }) {
         
         main {
           margin-top: 60px;
-          padding: 1rem;
+          padding: 1rem 10rem;
         }
       `}</style>
     </>
